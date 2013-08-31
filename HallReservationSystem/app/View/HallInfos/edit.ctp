@@ -10,6 +10,7 @@
 		echo $this->Form->input('cap_max');
 		echo $this->Form->input('dep_code');
 		echo $this->Form->input('location');
+		echo $this->Form->input('hall_description');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

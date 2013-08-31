@@ -94,12 +94,4 @@ class UsersController extends AppController {
 		$this->Session->setFlash(__('User was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
-        
-        public function login() {
-            
-        }
-        
-        public function logout() {
-            
-        }
 }

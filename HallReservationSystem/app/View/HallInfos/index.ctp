@@ -9,7 +9,6 @@
 			<th><?php echo $this->Paginator->sort('cap_max'); ?></th>
 			<th><?php echo $this->Paginator->sort('dep_code'); ?></th>
 			<th><?php echo $this->Paginator->sort('location'); ?></th>
-			<th><?php echo $this->Paginator->sort('hall_description'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	<?php foreach ($hallInfos as $hallInfo): ?>
@@ -21,7 +20,6 @@
 		<td><?php echo h($hallInfo['HallInfo']['cap_max']); ?>&nbsp;</td>
 		<td><?php echo h($hallInfo['HallInfo']['dep_code']); ?>&nbsp;</td>
 		<td><?php echo h($hallInfo['HallInfo']['location']); ?>&nbsp;</td>
-		<td><?php echo h($hallInfo['HallInfo']['hall_description']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $hallInfo['HallInfo']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $hallInfo['HallInfo']['id'])); ?>

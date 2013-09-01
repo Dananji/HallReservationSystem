@@ -54,8 +54,8 @@ class HallReservationSystemController extends AppController {
             $this->set('results', $results);
         }
         else {
-            $this->Session->write('hallID', $hallID);
-            $this->Session->write('hallName', $hallName);
+            $this->Session->write('hall id', $hallID);
+            $this->Session->write('hall name', $hallName);
             $this->Session->write('department', $departments);
             $this->Session->write('location', $location);
             $this->Session->write('capacity', $capacity);

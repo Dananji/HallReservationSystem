@@ -32,25 +32,4 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-//    var $components = array('Acl', 'Auth', 'Session');
-//    var $helpers = array('Html', 'Form', 'Session');
-    
-    public $components = array(
-        'Session',
-        'Auth' => array(
-            'loginRedirect' => array('controller' => 'HallReservationSystem', 'action' => 'index'),
-            'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home')
-        )
-    );
-    
-    function beforeFilter() {
-        //Configure AuthComponent
-//        $this->Auth->authorize = 'actions';
-//        $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
-//        $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'logout');
-//        $this->Auth->loginRedirect = array('controller' => 'hallreservationsystem', 'action' => 'index');
-        $this->Auth->allow('index', 'view');
-    }
-    
 }
-?>

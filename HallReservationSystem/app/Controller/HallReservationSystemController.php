@@ -13,66 +13,143 @@ class HallReservationSystemController extends AppController {
 //    public function choose() {}
 
         public function index() {
-        if(!isset($departments)) {
-            $sql = "select dep_name from department order by dep_name";
+        if(!isset($departments) || !isset($from) || !isset($to)) {
+            $sql = "SELECT dep_name FROM department ORDER BY dep_name";
             $query = $this->db->prepare($sql);
             $query->execute();
             $departments = $query->fetchAll(PDO::FETCH_COLUMN);
             $this->set('departments', $departments);
+//            $sql = "SELECT CONCAT( begin_time,  ' ', begin_meridiem ) FROM reservation_times ORDER BY tID";
+            $sql = "SELECT begin_time FROM reservation_times ORDER BY tID";
+            $query = $this->db->prepare($sql);
+            $query->execute();
+            $from = $query->fetchAll(PDO::FETCH_COLUMN);
+            $this->set('from', $from);
+//            $sql = "SELECT CONCAT( end_time,  ' ', end_meridiem ) FROM reservation_times ORDER BY tID";
+            $sql = "SELECT end_time FROM reservation_times ORDER BY tID";
+            $query = $this->db->prepare($sql);
+            $query->execute();
+            $to = $query->fetchAll(PDO::FETCH_COLUMN);
+            $this->set('to', $to);
         }
         if($this->request->is('post')) {
-            $department = $departments[$this->data['departments']];
+            $department = $departments[$this->data['department']];
             $capacity = $this->data['capacity'];
             $date = $this->data['date'];
-            $time = $this->data['time'];
-            $this->Session->write('departments', $department);
+            $from = $from[$this->data['from']];
+            $to = $to[$this->data['to']];
+            $this->Session->write('department', $department);
             $this->Session->write('capacity', $capacity);
             $this->Session->write('date', $date);
-            $this->Session->write('time', $time);
-            $this->redirect(array('action' => 'selecHall'));
+            $this->Session->write('from', $from);
+            $this->Session->write('to', $to);
+            $this->redirect(array('action' => 'selectHall'));
         }
     }
-    //add user details
-    public function selectHall($hallID = null, $hallName = null, $location = null, $capacity = null, $email = null, $firstName = null, $lastName = null) {
+    
+    public function selectHall($hallID = null, $hallName = null, $location = null, $capacity = null) {
         if($this->request->is('get')) {
             $capacity = $this->Session->read('capacity');
             $date = $this->Session->read('date');
-            $time = $this->Session->read('time');
-            $departments = $this->Session->read('departments');
+            $from = $this->Session->read('from');
+            $to = $this->Session->read('to');
+            $departments = $this->Session->read('department');
             $dateToString = $date['year'] . "-" . $date['month'] . "-" . $date['day'];
-            $timeToString = $time['hour'] . "-" . $time['minute'] . "-" . $time['second'];
+//            $time_from = $from['hour'] . ":" . $from['minute'] . ":" . $from['second'];
             $sql = "SELECT hID, hall_name, location
-                FROM hall_info
-                JOIN department ON ( department.dep_code = hall_info.dep_code ) 
-                WHERE hall_info.dep_name =  ?
-                AND ? BETWEEN hall_info.cap_min AND hall_info.cap_max 
-                AND hall_info.reserved = ?
-                ORDER BY hall_info.hID";
+                    FROM hall_info
+                    WHERE hID
+                    IN (
+                    SELECT DISTINCT hall_info.hID
+                    FROM hall_info, reserved_hall
+                    WHERE hall_info.hID NOT 
+                    IN (
+                    SELECT hID
+                    FROM reserved_hall
+                    WHERE reserved_hall.reserve_date > NOW( ) 
+                    )
+                    )
+                    AND ? 
+                    BETWEEN cap_min
+                    AND cap_max
+                    AND hall_info.dep_code = ( 
+                    SELECT dep_code
+                    FROM department
+                    WHERE dep_name =  ? ) 
+                    ORDER BY hall_info.hID";
             $query = $this->db->prepare($sql);
-            $query->execute(array($departments, $capacity, false));
+            $query->execute(array($capacity, $departments));
             $results = $query->fetchAll();
             $this->set('results', $results);
         }
         else {
-            $this->Session->write('hall id', $hallID);
-            $this->Session->write('hall name', $hallName);
-            $this->Session->write('department', $departments);
+            $this->Session->write('hallID', $hallID);
+            $this->Session->write('hallName', $hallName);
             $this->Session->write('location', $location);
-            $this->Session->write('capacity', $capacity);
-            $this->Session->write('date', $date);
-            $this->Session->write('time', $time);
+//            $this->Session->write('date', $dateToString);
+//            $this->Session->write('time', $timeToString);
             $this->redirect(array('action' => 'reservationDetails'));
         }
     }
-    
+//add date and time to Session     
     public function reservationDetails() {
         if($this->request->is('post')) {
+            $this->Session->write('first_name', $this->data['first name']);
+            $this->Session->write('last_name', $this->data['last name']);
+            $this->Session->write('email', $this->data['email']);
             $this->Session->write('description', $this->data['description']);
+//            $this->Session->write('date', $this->data['reserve_date']);
+//            $this->Session->write('time', $this->data['reserve_time']);
             $this->redirect(array('action' => 'Confirmation'));
         }
     }
     
     public function confirmation() {
+        if($this->request->is('post')) {
+            try {
+                $this->db->beginTransaction();
+                $first_name = $this->Session->read('first_name');
+                $last_name = $this->Session->read('last_name');
+                $email = $this->Session->read('email');
+                $sql = ("SELECT uID FROM user WHERE email =  ?");
+                $query = $this->db->prepare($sql);
+                $query->execute(array($email));
+                $result = $query->fetchAll();
+                if(!$result) {
+                    $description = $this->Session->read('description');
+                    $date = $this->Session->read('date');
+                    $time_start = $this->Session->read('from');
+                    $hID = $this->Session->read('hallID');
+                    $time_end = $this->Session->read('to');
+                    $sql = "INSERT INTO reservation(uID, date, time, description, hID, reservation_locked) VALUES (?,?,?,?,?,?,?)";
+                    $query = $this->db->prepare($sql);
+                    $db_status = $query->execute(array($result, $date, $time_start, $description, $hID, false));
+                    if(!$db_status) {
+                        $this->db->query("rollback");
+                        $this->redirect(array('action' => 'error'));
+                    }
+                    $sql = "INSERT INTO reserved_hall(hID, reserve_time_start, reserve_time_end, reserve_date, reserved) VALUES (?,?,?,?,?)";
+                    $query = $this->db->prepare($sql);
+                    $db_status = $query->execute(array($hID, $time_start, $time_end, $date, true));
+                    if(!$db_status) {
+                        $this->db->query("rollback");
+                        $this->redirect(array('action' => 'error'));
+                    }
+                    $this->db->commit();
+                    $this->redirect(array('action' => 'success'));
+                }
+            } catch (PDOException $ex) {
+                $this->db->query("rollback");
+                $this->redirect(array('action' => 'error'));
+            } 
+        }
+    }
+    
+    public function error() {
+        
+    }
+    
+    public function success() {
         
     }
 }

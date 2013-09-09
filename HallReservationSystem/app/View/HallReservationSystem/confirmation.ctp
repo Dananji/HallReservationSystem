@@ -13,7 +13,7 @@
                 <?php echo h($this->Session->read('capacity'));?>
                 &nbsp;
             </dd>
-            <dt><?php echo __('Department');?></dt>
+            <dt><?php echo __('Authority');?></dt>
             <dd>
                 <?php echo h($this->Session->read('department'));?>
                 &nbsp;

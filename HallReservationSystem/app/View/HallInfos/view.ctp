@@ -36,6 +36,11 @@
 			<?php echo h($hallInfo['HallInfo']['location']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Hall Description'); ?></dt>
+		<dd>
+			<?php echo h($hallInfo['HallInfo']['hall_description']); ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 <div class="actions">

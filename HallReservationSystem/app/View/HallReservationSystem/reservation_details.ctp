@@ -5,7 +5,25 @@
     <?php ?>
     <fieldset>
         <?php
-        echo 'Provide Further Details';
+        echo 'Personal Details:';
+        echo $this->Form->input('first name', array(
+            'rule' => 'nonEmpty',
+            'required' => true,
+            'message' => 'First Name Required'
+        ));
+        echo $this->Form->input('last name', array(
+            'rule' => 'nonEmpty',
+            'required' => false,
+            'message' => '',
+        ));
+        echo $this->Form->input('email', array(
+            'rule' => 'nonEmpty',
+            'required' => true,
+            'message' => 'Email is Required'
+        ));
+        ?>
+        <?php
+        echo 'Reservation Details:';
         echo $this->Form->input('reservation_description', array(
             'rule' => 'nonEmpty',
             'required' => true,

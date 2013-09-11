@@ -1,10 +1,9 @@
 <?php
-
 /**
- * Application level Controller
+ * Application level View Helper
  *
- * This file is application-wide controller file. You can put all
- * application-wide controller-related methods here.
+ * This file is application-wide helper file. You can put all
+ * application-wide helper-related methods here.
  *
  * PHP 5
  *
@@ -17,20 +16,24 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.Controller
+ * @package       app.View.Helper
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-App::uses('Controller', 'Controller');
+App::uses('Helper', 'View');
 
 /**
- * Application Controller
+ * Application helper
  *
- * Add your application-wide methods in the class below, your controllers
+ * Add your application-wide methods in the class below, your helpers
  * will inherit them.
  *
- * @package		app.Controller
- * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
+ * @package       app.View.Helper
  */
-class AppController extends Controller {
+class DateHelper extends AppHelper {
+    
+    function ParseDateTime($dateField) {
+        $dateString = $dateField['year'] . "-" . $dateField['month'] . "-" . $dateField['day'];
+        return DateTime::createFromFormat('Y-m-d', $dateString);
+    }
 }

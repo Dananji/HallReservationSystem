@@ -15,9 +15,8 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View.Helper
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('View', 'View');
 App::uses('HtmlHelper', 'View/Helper');
 App::uses('JsHelper', 'View/Helper');
@@ -41,8 +40,6 @@ class PaginatorHelperTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		parent::setUp();
-		Configure::write('Config.language', 'eng');
 		$controller = null;
 		$this->View = new View($controller);
 		$this->Paginator = new PaginatorHelper($this->View);
@@ -79,7 +76,6 @@ class PaginatorHelperTest extends CakeTestCase {
  * @return void
  */
 	public function tearDown() {
-		parent::tearDown();
 		unset($this->View, $this->Paginator);
 	}
 
@@ -290,7 +286,7 @@ class PaginatorHelperTest extends CakeTestCase {
 		Router::setRequestInfo(array(
 			array('plugin' => null, 'controller' => 'accounts', 'action' => 'index', 'pass' => array(),
 				'url' => array('url' => 'accounts/', 'mod_rewrite' => 'true')),
-			array('base' => '/', 'here' => '/accounts/', 'webroot' => '/')
+			array('base' => '/', 'here' => '/accounts/', 'webroot' => '/',)
 		));
 		$this->Paginator->options(array('url' => array('param')));
 
@@ -588,6 +584,8 @@ class PaginatorHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testUrlGenerationWithPrefixes() {
+		$_back = Configure::read('Routing');
+
 		Configure::write('Routing.prefixes', array('members'));
 		Router::reload();
 
@@ -644,6 +642,8 @@ class PaginatorHelperTest extends CakeTestCase {
 		$result = $this->Paginator->url($options);
 		$expected = '/posts/index/page:2/sort:Article.name/direction:desc';
 		$this->assertEquals($expected, $result);
+
+		Configure::write('Routing', $_back);
 	}
 
 /**
@@ -2477,7 +2477,7 @@ class PaginatorHelperTest extends CakeTestCase {
 	}
 
 /**
- * test that query string URLs can be generated.
+ * test that querystring urls can be generated.
  *
  * @return void
  */
@@ -2493,7 +2493,7 @@ class PaginatorHelperTest extends CakeTestCase {
 	}
 
 /**
- * test query string paging link.
+ * test querystring paging link.
  *
  * @return void
  */

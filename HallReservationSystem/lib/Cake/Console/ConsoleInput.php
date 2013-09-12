@@ -15,9 +15,8 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Console
  * @since         CakePHP(tm) v 2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 /**
  * Object wrapper for interacting with stdin
  *

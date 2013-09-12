@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Utility
  * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('Multibyte', 'I18n');
@@ -97,12 +97,13 @@ class CakeTime {
  *
  * @param string $name Variable name
  * @param mixes $value Variable value
- * @return void
  */
 	public function __set($name, $value) {
 		switch ($name) {
 			case 'niceFormat':
 				self::${$name} = $value;
+				break;
+			default:
 				break;
 		}
 	}
@@ -318,15 +319,10 @@ class CakeTime {
 
 		if (is_int($dateString) || is_numeric($dateString)) {
 			$date = intval($dateString);
-		} elseif (
-			$dateString instanceof DateTime &&
-			$dateString->getTimezone()->getName() != date_default_timezone_get()
-		) {
+		} elseif (is_object($dateString) && $dateString instanceof DateTime) {
 			$clone = clone $dateString;
 			$clone->setTimezone(new DateTimeZone(date_default_timezone_get()));
 			$date = (int)$clone->format('U') + $clone->getOffset();
-		} elseif ($dateString instanceof DateTime) {
-			$date = (int)$dateString->format('U');
 		} else {
 			$date = strtotime($dateString);
 		}
@@ -467,8 +463,7 @@ class CakeTime {
  */
 	public static function isToday($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$now = self::fromString('now', $timezone);
-		return date('Y-m-d', $timestamp) == date('Y-m-d', $now);
+		return date('Y-m-d', $timestamp) == date('Y-m-d', time());
 	}
 
 /**
@@ -481,8 +476,7 @@ class CakeTime {
  */
 	public static function isThisWeek($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$now = self::fromString('now', $timezone);
-		return date('W o', $timestamp) == date('W o', $now);
+		return date('W o', $timestamp) == date('W o', time());
 	}
 
 /**
@@ -495,8 +489,7 @@ class CakeTime {
  */
 	public static function isThisMonth($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$now = self::fromString('now', $timezone);
-		return date('m Y', $timestamp) == date('m Y', $now);
+		return date('m Y', $timestamp) == date('m Y', time());
 	}
 
 /**
@@ -509,8 +502,7 @@ class CakeTime {
  */
 	public static function isThisYear($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$now = self::fromString('now', $timezone);
-		return date('Y', $timestamp) == date('Y', $now);
+		return date('Y', $timestamp) == date('Y', time());
 	}
 
 /**
@@ -524,8 +516,7 @@ class CakeTime {
  */
 	public static function wasYesterday($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$yesterday = self::fromString('yesterday', $timezone);
-		return date('Y-m-d', $timestamp) == date('Y-m-d', $yesterday);
+		return date('Y-m-d', $timestamp) == date('Y-m-d', strtotime('yesterday'));
 	}
 
 /**
@@ -538,8 +529,7 @@ class CakeTime {
  */
 	public static function isTomorrow($dateString, $timezone = null) {
 		$timestamp = self::fromString($dateString, $timezone);
-		$tomorrow = self::fromString('tomorrow', $timezone);
-		return date('Y-m-d', $timestamp) == date('Y-m-d', $tomorrow);
+		return date('Y-m-d', $timestamp) == date('Y-m-d', strtotime('tomorrow'));
 	}
 
 /**
@@ -885,9 +875,8 @@ class CakeTime {
 
 		$date = self::fromString($dateString, $timezone);
 		$interval = self::fromString('-' . $timeInterval);
-		$now = self::fromString('now', $timezone);
 
-		return $date >= $interval && $date <= $now;
+		return $date >= $interval && $date <= time();
 	}
 
 /**
@@ -908,9 +897,8 @@ class CakeTime {
 
 		$date = self::fromString($dateString, $timezone);
 		$interval = self::fromString('+' . $timeInterval);
-		$now = self::fromString('now', $timezone);
 
-		return $date <= $interval && $date >= $now;
+		return $date <= $interval && $date >= time();
 	}
 
 /**

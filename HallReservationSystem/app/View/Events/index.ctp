@@ -15,9 +15,9 @@
 		<td><?php echo h($event['Event']['time']); ?>&nbsp;</td>
 		<td><?php echo h($event['Event']['reserved']); ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $event['Event']['date, time'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $event['Event']['date, time'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $event['Event']['date, time']), null, __('Are you sure you want to delete # %s?', $event['Event']['date, time'])); ?>
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $event['Event']['date'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $event['Event']['date'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $event['Event']['date']), null, __('Are you sure you want to delete # %s?', $event['Event']['date'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>

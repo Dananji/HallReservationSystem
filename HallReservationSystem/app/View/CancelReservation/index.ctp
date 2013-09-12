@@ -1,45 +1,32 @@
-<div class ="search_hall actions">
-    <?php echo $this->Form->create($model = false, array('url' => array('controller' => 'HallReservationSystem', 'action' => 'index')));?>
+<div class="cancel_reservation index">
+    <?php echo $this->Form->create($model = false, array('url' => array('controller' => 'CancelReservation', 'action' => 'index')));?>
     <fieldset>
-        <h2>Search Hall</h2>
+        <h2>Your Reservations</h2>
+        <table cellpadding ="0" cellspacing ="0">
+        <tr>
+            <th><?php echo 'Hall Name';?></th>
+            <th><?php echo 'Description';?></th>
+            <th><?php echo 'Date';?></th>
+            <th><?php echo 'Time';?></th>
+            <th class="actions"><?php echo __('        ');?></th>
+        </tr>        
+        <?php foreach ($results as $result): ?>
+        <tr>
+            <td><?php echo h($result['hID']);?>&nbsp;</td>
+            <td><?php echo h($result['description']);?>&nbsp;</td>
+            <td><?php echo h($result['date']);?>&nbsp;</td>
+            <td><?php echo h($result['time']);?>&nbsp;</td>
+            <td class="actions">
+                <?php echo $this->Form->postLink(__('Cancel'), array('action' => 'cancelRecord', $result['hID'], $result['description'], $result['date'], $result['time']
+                    )); ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
         <?php
-        echo $this->Form->input('date', array(
-            'type' => 'date',
-            'empty' => true,
-            'minYear' => date('Y'),
-            'maxYear' => date('Y') + 3
-            ));
-        echo $this->Form->input('from', array(
-            'options' => $from,
-//            'empty' => true
-            ));
-        $options = array(
-            'am' => 'am',
-            'pm' => 'pm'
-        );
-        $attributes = array(
-            'legend' => false
-        );
-        echo $this->Form->radio('type_begin', $options, $attributes);
-        echo $this->Form->input('to', array(
-            'options' => $to,
-//            'empty' => true
-            ));
-        $options = array(
-            'am' => 'am',
-            'pm' => 'pm'
-        );
-        $attributes = array(
-            'legend' => false
-        );
-        echo $this->Form->radio('type_end', $options, $attributes);
-        echo $this->Form->input('capacity', array(
-            'rule' => 'numeric',
-            'required' => true,
-            'message' => 'Capacity is required'
-        ));
-        echo $this->Form->input('department', array('options' => $departments));
-        ?>
+            if(empty($results)) {
+            echo 'There are no reservations.';
+            } ?>
+    </table>
     </fieldset>
-    <?php echo $this->Form->end('Search')?>
+    <?php echo $this->Form->end('Submit')?>
 </div>

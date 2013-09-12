@@ -5,16 +5,14 @@ App::uses('AppController', 'Controller');
 include_once '../Lib/Database.php';
 
 class MakeReservationController extends AppController {
-    
+
     public function beforeFilter() {
         parent::beforeFilter();
         $this->db = new Database();
     }
-    
-//    public function choose() {}
 
-        public function index() {
-        if(!isset($departments) || !isset($from) || !isset($to)) {
+    public function index() {
+        if (!isset($departments) || !isset($from) || !isset($to)) {
             $sql = "SELECT dep_name FROM department ORDER BY dep_name";
             $query = $this->db->prepare($sql);
             $query->execute();
@@ -31,7 +29,7 @@ class MakeReservationController extends AppController {
             $to = $query->fetchAll(PDO::FETCH_COLUMN);
             $this->set('to', $to);
         }
-        if($this->request->is('post')) {
+        if ($this->request->is('post')) {
             $department = $departments[$this->data['department']];
             $capacity = $this->data['capacity'];
             $date = $this->data['date'];
@@ -49,14 +47,14 @@ class MakeReservationController extends AppController {
             $this->redirect(array('action' => 'selectHall'));
         }
     }
-    
+
     public function selectHall($hallID = null, $hallName = null, $location = null, $capacity = null) {
-        if($this->request->is('get')) {
+        if ($this->request->is('get')) {
             $capacity = $this->Session->read('capacity');
             $date = $this->Session->read('date');
-            $from =  $this->Session->read('from');
-            $dateTime = $date.$from;
-            $dateString = $date['year'] . '-' .$date['month'] . '-' . $date['day'];
+            $from = $this->Session->read('from');
+            $dateTime = $date . $from;
+            $dateString = $date['year'] . '-' . $date['month'] . '-' . $date['day'];
             $this->Session->write('date', $dateString);
             $departments = $this->Session->read('department');
             $sql = "SELECT hID, hall_name, location
@@ -84,8 +82,7 @@ class MakeReservationController extends AppController {
             $query->execute(array($dateString, $capacity, $departments));
             $results = $query->fetchAll();
             $this->set('results', $results);
-        }
-        else {
+        } else {
             $this->Session->write('hallID', $hallID);
             $this->Session->write('hallName', $hallName);
             $this->Session->write('location', $location);
@@ -93,9 +90,9 @@ class MakeReservationController extends AppController {
             $this->redirect(array('action' => 'reservationDetails'));
         }
     }
-    
+
     public function reservationDetails() {
-        if($this->request->is('post')) {
+        if ($this->request->is('post')) {
             $this->Session->write('first_name', $this->data['first name']);
             $this->Session->write('last_name', $this->data['last name']);
             $this->Session->write('email', $this->data['email']);
@@ -103,21 +100,21 @@ class MakeReservationController extends AppController {
             $this->redirect(array('action' => 'Confirmation'));
         }
     }
-    
+
     public function confirmation() {
-        if($this->request->is('post')) {
+        if ($this->request->is('post')) {
             try {
                 $this->db->beginTransaction();
                 $first_name = $this->Session->read('first_name');
                 $last_name = $this->Session->read('last_name');
                 $email = $this->Session->read('email');
-                $sql = "SELECT uID FROM user WHERE email =  ? ";
+                $sql = "SELECT uID FROM users WHERE email =  ? ";
                 $query = $this->db->prepare($sql);
                 $query->execute(array($email));
                 $result = $query->fetchAll();
-                $row = mysql_fetch_assoc($result);
+//                $row = mysql_fetch_assoc($result);
 //                $array = token_get_all($result);
-                if($result != null) {
+                if ($result != null) {
                     $description = $this->Session->read('description');
                     $date = $this->Session->read('date');
                     $time_start = $this->Session->read('from');
@@ -125,38 +122,39 @@ class MakeReservationController extends AppController {
                     $hID = $this->Session->read('hallID');
                     $time_end = $this->Session->read('to');
                     $dateTime = $this->Session->read('dateTime');
-                    $sql = "INSERT INTO reservation(uID, date, time, meridiem, description, hID, reservation_locked) SELECT user.uID,?,?,?,?,?,?  FROM user WHERE email = ?";
+                    $sql = "INSERT INTO reservation(uID, date, time, meridiem, description, hID, reservation_locked) SELECT users.uID,?,?,?,?,?,?  FROM users WHERE email = ?";
 //                  INSERT INTO  reservation(uID, date, time, meridiem, description, hID, reservation_locked) VALUES ((SELECT uID FROM user WHERE email =  ? ),?,?,?,?,?,?)
                     $query = $this->db->prepare($sql);
                     $db_status = $query->execute(array($date, $time_start, $meridiem, $description, $hID, false, $email));
-                    if(!$db_status) {
+                    if (!$db_status) {
                         $this->db->query("rollback");
                         $this->redirect(array('action' => 'error'));
                     }
                     $sql = "INSERT INTO reserved_hall(hID, reserve_time_start, reserve_time_end, reserve_date, reserved) VALUES (?,?,?,?,?)";
                     $query = $this->db->prepare($sql);
                     $db_status = $query->execute(array($hID, $time_start, $time_end, $date, true));
-                    if(!$db_status) {
+                    if (!$db_status) {
                         $this->db->query("rollback");
                         $this->redirect(array('action' => 'error'));
                     }
-                } 
+                }
                 $this->db->commit();
                 $this->redirect(array('action' => 'success'));
-                } catch (PDOException $ex) {
-                    $this->db->query("rollback");
-                    $this->redirect(array('action' => 'error'));
-                } 
+            } catch (PDOException $ex) {
+                $this->db->query("rollback");
+                $this->redirect(array('action' => 'error'));
             }
         }
-        
+    }
+
     public function error() {
         
     }
-    
+
     public function success() {
         
     }
+
 }
 
 ?>

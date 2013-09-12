@@ -15,9 +15,8 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Log.Engine
  * @since         CakePHP(tm) v 1.3
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('FileLog', 'Log/Engine');
 
 /**
@@ -81,4 +80,5 @@ class FileLogTest extends CakeTestCase {
 		$this->assertTrue(file_exists($path . 'error.log'));
 		unlink($path . 'error.log');
 	}
+
 }

@@ -6,8 +6,10 @@
 			<th><?php echo $this->Paginator->sort('uID'); ?></th>
 			<th><?php echo $this->Paginator->sort('date'); ?></th>
 			<th><?php echo $this->Paginator->sort('time'); ?></th>
+			<th><?php echo $this->Paginator->sort('meridiem'); ?></th>
 			<th><?php echo $this->Paginator->sort('description'); ?></th>
 			<th><?php echo $this->Paginator->sort('hID'); ?></th>
+			<th><?php echo $this->Paginator->sort('reservation_locked'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	<?php foreach ($reservations as $reservation): ?>
@@ -16,8 +18,10 @@
 		<td><?php echo h($reservation['Reservation']['uID']); ?>&nbsp;</td>
 		<td><?php echo h($reservation['Reservation']['date']); ?>&nbsp;</td>
 		<td><?php echo h($reservation['Reservation']['time']); ?>&nbsp;</td>
+		<td><?php echo h($reservation['Reservation']['meridiem']); ?>&nbsp;</td>
 		<td><?php echo h($reservation['Reservation']['description']); ?>&nbsp;</td>
 		<td><?php echo h($reservation['Reservation']['hID']); ?>&nbsp;</td>
+		<td><?php echo h($reservation['Reservation']['reservation_locked']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $reservation['Reservation']['rID'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $reservation['Reservation']['rID'])); ?>

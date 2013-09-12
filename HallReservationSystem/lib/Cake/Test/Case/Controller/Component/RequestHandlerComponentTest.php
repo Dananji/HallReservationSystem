@@ -15,9 +15,8 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Controller.Component
  * @since         CakePHP(tm) v 1.2.0.5435
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('Controller', 'Controller');
 App::uses('RequestHandlerComponent', 'Controller/Component');
 App::uses('CakeRequest', 'Network');
@@ -413,23 +412,6 @@ class RequestHandlerComponentTest extends CakeTestCase {
 	}
 
 /**
- * test that redirects with ajax and no url don't do anything.
- *
- * @return void
- */
-	public function testAjaxRedirectWithNoUrl() {
-		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
-		$this->Controller->response = $this->getMock('CakeResponse');
-
-		$this->Controller->response->expects($this->never())
-			->method('body');
-
-		$this->RequestHandler->initialize($this->Controller);
-		$this->RequestHandler->startup($this->Controller);
-		$this->assertNull($this->RequestHandler->beforeRedirect($this->Controller, null));
-	}
-
-/**
  * testRenderAs method
  *
  * @return void
@@ -819,10 +801,10 @@ class RequestHandlerComponentTest extends CakeTestCase {
 
 /**
  * test that the beforeRedirect callback properly converts
- * array URLs into their correct string ones, and adds base => false so
- * the correct URLs are generated.
+ * array urls into their correct string ones, and adds base => false so
+ * the correct urls are generated.
  *
- * @link https://cakephp.lighthouseapp.com/projects/42648-cakephp-1x/tickets/276
+ * @link http://cakephp.lighthouseapp.com/projects/42648-cakephp-1x/tickets/276
  * @return void
  */
 	public function testBeforeRedirectCallbackWithArrayUrl() {
@@ -857,7 +839,7 @@ class RequestHandlerComponentTest extends CakeTestCase {
 
 		$controller = $this->getMock('Controller', array('header'));
 		$RequestHandler = $this->getMock('RequestHandlerComponent', array('_stop'), array(&$this->Controller->Components));
-		$RequestHandler->response = $this->getMock('CakeResponse', array('_sendHeader', 'statusCode'));
+		$RequestHandler->response = $this->getMock('CakeResponse', array('_sendHeader','statusCode'));
 		$RequestHandler->request = $this->getMock('CakeRequest');
 		$RequestHandler->request->expects($this->once())->method('is')
 			->with('ajax')

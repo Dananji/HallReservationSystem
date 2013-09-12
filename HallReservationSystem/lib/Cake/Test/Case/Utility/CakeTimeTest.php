@@ -15,9 +15,8 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View.Helper
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('CakeTime', 'Utility');
 
 /**
@@ -40,10 +39,8 @@ class CakeTimeTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		parent::setUp();
 		$this->Time = new CakeTime();
 		$this->_systemTimezoneIdentifier = date_default_timezone_get();
-		Configure::write('Config.language', 'eng');
 	}
 
 /**
@@ -52,7 +49,6 @@ class CakeTimeTest extends CakeTestCase {
  * @return void
  */
 	public function tearDown() {
-		parent::tearDown();
 		unset($this->Time);
 		$this->_restoreSystemTimezone();
 	}
@@ -858,24 +854,11 @@ class CakeTimeTest extends CakeTestCase {
 
 		$date = new DateTime('+1 hour', new DateTimeZone('America/New_York'));
 		$result = $this->Time->fromString($date, 'Asia/Kuwait');
-
 		$date->setTimezone(new DateTimeZone('Asia/Kuwait'));
 		$expected = $date->format('U') + $date->getOffset();
 		$this->assertWithinMargin($expected, $result, 1);
 
 		$this->_restoreSystemTimezone();
-	}
-
-/**
- * Test that datetimes in the default timezone are not modified.
- *
- * @return void
- */
-	public function testFromStringWithDateTimeNoConversion() {
-		Configure::write('Config.timezone', date_default_timezone_get());
-		$date = new DateTime('2013-04-09');
-		$result = $this->Time->fromString($date);
-		$this->assertEquals($result, $date->format('U'));
 	}
 
 /**

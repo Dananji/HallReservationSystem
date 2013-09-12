@@ -1,5 +1,5 @@
 <div class="reservation_details">
-    <?php echo $this->Form->create($model = false,array('url'=> array('controller' => 'HallReservationSystem', 'action' => 'reservationDetails')));?>
+    <?php echo $this->Form->create($model = false,array('url'=> array('controller' => 'MakeReservation', 'action' => 'reservationDetails')));?>
     
     <h2>Reservation Details</h2>
     <?php ?>

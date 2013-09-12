@@ -14,7 +14,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Model
  * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('AppModel', 'Model');
@@ -123,32 +123,33 @@ class Permission extends AppModel {
 
 			if (empty($perms)) {
 				continue;
-			}
-			$perms = Hash::extract($perms, '{n}.' . $this->alias);
-			foreach ($perms as $perm) {
-				if ($action === '*') {
+			} else {
+				$perms = Hash::extract($perms, '{n}.' . $this->alias);
+				foreach ($perms as $perm) {
+					if ($action === '*') {
 
-					foreach ($permKeys as $key) {
-						if (!empty($perm)) {
-							if ($perm[$key] == -1) {
-								return false;
-							} elseif ($perm[$key] == 1) {
-								$inherited[$key] = 1;
+						foreach ($permKeys as $key) {
+							if (!empty($perm)) {
+								if ($perm[$key] == -1) {
+									return false;
+								} elseif ($perm[$key] == 1) {
+									$inherited[$key] = 1;
+								}
 							}
 						}
-					}
 
-					if (count($inherited) === count($permKeys)) {
-						return true;
-					}
-				} else {
-					switch ($perm['_' . $action]) {
-						case -1:
-							return false;
-						case 0:
-							continue;
-						case 1:
+						if (count($inherited) === count($permKeys)) {
 							return true;
+						}
+					} else {
+						switch ($perm['_' . $action]) {
+							case -1:
+								return false;
+							case 0:
+								continue;
+							case 1:
+								return true;
+						}
 					}
 				}
 			}
@@ -161,10 +162,9 @@ class Permission extends AppModel {
  *
  * @param string $aro ARO The requesting object identifier.
  * @param string $aco ACO The controlled object identifier.
- * @param string $actions Action (defaults to *) Invalid permissions will result in an exception
+ * @param string $actions Action (defaults to *)
  * @param integer $value Value to indicate access type (1 to give access, -1 to deny, 0 to inherit)
  * @return boolean Success
- * @throws AclException on Invalid permission key.
  */
 	public function allow($aro, $aco, $actions = "*", $value = 1) {
 		$perms = $this->getAclLink($aro, $aco);
@@ -185,14 +185,15 @@ class Permission extends AppModel {
 			if (!is_array($actions)) {
 				$actions = array('_' . $actions);
 			}
-			foreach ($actions as $action) {
-				if ($action{0} !== '_') {
-					$action = '_' . $action;
+			if (is_array($actions)) {
+				foreach ($actions as $action) {
+					if ($action{0} !== '_') {
+						$action = '_' . $action;
+					}
+					if (in_array($action, $permKeys)) {
+						$save[$action] = $value;
+					}
 				}
-				if (!in_array($action, $permKeys, true)) {
-					throw new AclException(__d('cake_dev', 'Invalid permission key "%s"', $action));
-				}
-				$save[$action] = $value;
 			}
 		}
 		list($save['aro_id'], $save['aco_id']) = array($perms['aro'], $perms['aco']);

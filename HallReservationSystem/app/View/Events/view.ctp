@@ -26,8 +26,8 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Event'), array('action' => 'edit', $event['Event']['date, time'])); ?> </li>
-		<li><?php echo $this->Form->postLink(__('Delete Event'), array('action' => 'delete', $event['Event']['date, time']), null, __('Are you sure you want to delete # %s?', $event['Event']['date, time'])); ?> </li>
+		<li><?php echo $this->Html->link(__('Edit Event'), array('action' => 'edit', $event['Event']['date'])); ?> </li>
+		<li><?php echo $this->Form->postLink(__('Delete Event'), array('action' => 'delete', $event['Event']['date']), null, __('Are you sure you want to delete # %s?', $event['Event']['date'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Events'), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Event'), array('action' => 'add')); ?> </li>
 	</ul>

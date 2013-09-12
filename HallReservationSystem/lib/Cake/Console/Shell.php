@@ -14,7 +14,7 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.2.0.5012
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('TaskCollection', 'Console');
@@ -22,7 +22,6 @@ App::uses('ConsoleOutput', 'Console');
 App::uses('ConsoleInput', 'Console');
 App::uses('ConsoleInputSubcommand', 'Console');
 App::uses('ConsoleOptionParser', 'Console');
-App::uses('ClassRegistry', 'Utility');
 App::uses('File', 'Utility');
 
 /**
@@ -235,6 +234,7 @@ class Shell extends Object {
 		if (empty($this->uses)) {
 			return false;
 		}
+		App::uses('ClassRegistry', 'Utility');
 
 		$uses = is_array($this->uses) ? $this->uses : array($this->uses);
 
@@ -504,7 +504,7 @@ class Shell extends Object {
 		$result = $this->stdin->read();
 
 		if ($result === false) {
-			return $this->_stop(1);
+			$this->_stop(1);
 		}
 		$result = trim($result);
 
@@ -542,7 +542,7 @@ class Shell extends Object {
  *
  * There are 3 built-in output level. Shell::QUIET, Shell::NORMAL, Shell::VERBOSE.
  * The verbose and quiet output levels, map to the `verbose` and `quiet` output switches
- * present in most shells. Using Shell::QUIET for a message means it will always display.
+ * present in  most shells. Using Shell::QUIET for a message means it will always display.
  * While using Shell::VERBOSE means it will only display when verbose output is toggled.
  *
  * @param string|array $message A string or a an array of strings to output
@@ -618,7 +618,7 @@ class Shell extends Object {
 		if (!empty($message)) {
 			$this->err($message);
 		}
-		return $this->_stop(1);
+		$this->_stop(1);
 	}
 
 /**
@@ -656,7 +656,7 @@ class Shell extends Object {
 
 			if (strtolower($key) === 'q') {
 				$this->out(__d('cake_console', '<error>Quitting</error>.'), 2);
-				return $this->_stop();
+				$this->_stop();
 			} elseif (strtolower($key) !== 'y') {
 				$this->out(__d('cake_console', 'Skip `%s`', $path), 2);
 				return false;

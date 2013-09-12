@@ -41,6 +41,11 @@
 			<?php echo h($hallInfo['HallInfo']['hall_description']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Reserved'); ?></dt>
+		<dd>
+			<?php echo h($hallInfo['HallInfo']['reserved']); ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 <div class="actions">

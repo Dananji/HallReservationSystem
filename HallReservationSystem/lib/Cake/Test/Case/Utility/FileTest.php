@@ -15,9 +15,8 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Utility
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('File', 'Utility');
 App::uses('Folder', 'Utility');
 
@@ -434,24 +433,16 @@ class FileTest extends CakeTestCase {
 		$TmpFile = new File($tmpFile);
 		$this->assertFalse(file_exists($tmpFile));
 
-		$fragments = array('CakePHP\'s', ' test suite', ' was here ...');
+		$fragments = array('CakePHP\'s', ' test suite', ' was here ...', '');
 		$data = null;
-		$size = 0;
 		foreach ($fragments as $fragment) {
 			$r = $TmpFile->append($fragment);
 			$this->assertTrue($r);
 			$this->assertTrue(file_exists($tmpFile));
 			$data = $data . $fragment;
 			$this->assertEquals($data, file_get_contents($tmpFile));
-			$newSize = $TmpFile->size();
-			$this->assertTrue($newSize > $size);
-			$size = $newSize;
 			$TmpFile->close();
 		}
-
-		$TmpFile->append('');
-		$this->assertEquals($data, file_get_contents($tmpFile));
-		$TmpFile->close();
 	}
 
 /**
@@ -543,7 +534,7 @@ class FileTest extends CakeTestCase {
 /**
  * getTmpFile method
  *
- * @param boolean $paintSkip
+ * @param bool $paintSkip
  * @return void
  */
 	protected function _getTmpFile($paintSkip = true) {

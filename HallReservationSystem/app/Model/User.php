@@ -1,26 +1,18 @@
 <?php
 
 App::uses('AppModel', 'Model');
+App::uses('AuthComponent', 'Controller/Component');
 
 /**
  * User Model
  *
+ * @property Group $Group
+ * @property Post $Post
  */
 class User extends AppModel {
 
-    /**
-     * Use table
-     *
-     * @var mixed False or table name
-     */
-    public $useTable = 'user';
-
-    /**
-     * Primary key field
-     *
-     * @var string
-     */
-    public $primaryKey = 'uID';
+    public $name = 'User';
+    public $displayField = 'name';
 
     /**
      * Validation rules
@@ -28,60 +20,69 @@ class User extends AppModel {
      * @var array
      */
     public $validate = array(
-        'uID' => array(
-            'numeric' => array(
-                'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
+        'username' => array(
+            'The username must be between 5 to 15 character' => array(
+                'rule' => array('between', 5, 15),
+                'message' => 'Username must be between 5 to 15 character'
+            ),
+            'The username is already taken' => array(
+                'rule' => 'isUnique',
+                'message' => 'Username exists'
+            )
+        ),
+        'name' => array(
+            'Please enter the first name' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Enter your first name'
             ),
         ),
-        'username' => array(
-            'notempty' => array(
-                'rule' => array('between', 5, 15),
-                'message' => 'Username must be between 5 to 15 characters',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
+        'uID' => array(
+            'Please enter the user ID' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Enter your user ID'
             ),
-            'That username has been taken' => array(
+            'The UID is already taken' => array(
                 'rule' => 'isUnique',
-                'message' => 'Username is already taken'
+                'message' => 'UID exists'
             )
         ),
         'password' => array(
-            'Password, minimum length is 5' => array(
-                'rule' => array('between', 5, 100),
-                //'message' => 'Your custom message here',
-                'allowEmpty' => false,
-                'required' => true,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
-        ),
-        'role' => array(
             'notempty' => array(
-                'rule' => array('option', 'admin' => 'Admin', 'user' => 'User'),
-                //'message' => 'Your custom message here',
-                //'allowEmpty' => false,
-                'required' => true,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
+                'rule' => 'notempty',
+                'message' => 'Please enter your password'
+            ),
+            'Match password' => array(
+                'rule' => 'matchPasswords',
+                'message' => 'Your passwords do not match'
+            )
+        ),
+        'password_confirmation' => array(
+            'notempty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please confirm your password'
             ),
         ),
         'email' => array(
-            'email' => array(
+            'notEmpty' => array(
                 'rule' => array('email'),
-                'message' => 'Please enter a valid email address',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
+                'message' => 'Please Enter a valid email address'
             ),
         ),
     );
+
+    public function matchPasswords($data) {
+        if ($data['password'] == $this->data['User']['password_confirmation']) {
+            return true;
+        }
+        $this->invalidate('password_confirmation', 'Your passwords do not match');
+        return false;
+    }
+    
+    public function beforeSave() {
+        if(isset($this->data['User']['password'])) {
+            $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']); 
+        }
+        return true;
+    }
 
 }

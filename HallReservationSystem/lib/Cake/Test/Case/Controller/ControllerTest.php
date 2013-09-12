@@ -11,9 +11,8 @@
  * @link          http://cakephp.org CakePHP Project
  * @package       Cake.Test.Case.Controller
  * @since         CakePHP(tm) v 1.2.0.5436
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('Controller', 'Controller');
 App::uses('Router', 'Routing');
 App::uses('CakeRequest', 'Network');
@@ -59,9 +58,16 @@ class ControllerTestAppController extends Controller {
 class ControllerPost extends CakeTestModel {
 
 /**
+ * name property
+ *
+ * @var string 'ControllerPost'
+ */
+	public $name = 'ControllerPost';
+
+/**
  * useTable property
  *
- * @var string
+ * @var string 'posts'
  */
 	public $useTable = 'posts';
 
@@ -114,6 +120,13 @@ class ControllerPost extends CakeTestModel {
  */
 class ControllerCommentsController extends ControllerTestAppController {
 
+/**
+ * name property
+ *
+ * @var string 'ControllerPost'
+ */
+	public $name = 'ControllerComments';
+
 	protected $_mergeParent = 'ControllerTestAppController';
 }
 
@@ -127,14 +140,14 @@ class ControllerComment extends CakeTestModel {
 /**
  * name property
  *
- * @var string
+ * @var string 'ControllerComment'
  */
 	public $name = 'Comment';
 
 /**
  * useTable property
  *
- * @var string
+ * @var string 'comments'
  */
 	public $useTable = 'comments';
 
@@ -148,7 +161,7 @@ class ControllerComment extends CakeTestModel {
 /**
  * alias property
  *
- * @var string
+ * @var string 'ControllerComment'
  */
 	public $alias = 'ControllerComment';
 }
@@ -161,16 +174,23 @@ class ControllerComment extends CakeTestModel {
 class ControllerAlias extends CakeTestModel {
 
 /**
+ * name property
+ *
+ * @var string 'ControllerAlias'
+ */
+	public $name = 'ControllerAlias';
+
+/**
  * alias property
  *
- * @var string
+ * @var string 'ControllerSomeAlias'
  */
 	public $alias = 'ControllerSomeAlias';
 
 /**
  * useTable property
  *
- * @var string
+ * @var string 'posts'
  */
 	public $useTable = 'posts';
 }
@@ -184,20 +204,20 @@ class NameTest extends CakeTestModel {
 
 /**
  * name property
- * @var string
+ * @var string 'Name'
  */
 	public $name = 'Name';
 
 /**
  * useTable property
- * @var string
+ * @var string 'names'
  */
 	public $useTable = 'comments';
 
 /**
  * alias property
  *
- * @var string
+ * @var string 'ControllerComment'
  */
 	public $alias = 'Name';
 }
@@ -208,6 +228,12 @@ class NameTest extends CakeTestModel {
  * @package       Cake.Test.Case.Controller
  */
 class TestController extends ControllerTestAppController {
+
+/**
+ * name property
+ * @var string 'Name'
+ */
+	public $name = 'Test';
 
 /**
  * helpers property
@@ -334,13 +360,6 @@ class TestComponent extends Object {
 
 class Test2Component extends TestComponent {
 
-	public $model;
-
-	public function __construct(ComponentCollection $collection, $settings) {
-		$this->controller = $collection->getController();
-		$this->model = $this->controller->modelClass;
-	}
-
 	public function beforeRender(Controller $controller) {
 		return false;
 	}
@@ -353,6 +372,12 @@ class Test2Component extends TestComponent {
  * @package       Cake.Test.Case.Controller
  */
 class AnotherTestController extends ControllerTestAppController {
+
+/**
+ * name property
+ * @var string 'Name'
+ */
+	public $name = 'AnotherTest';
 
 /**
  * uses property
@@ -422,24 +447,11 @@ class ControllerTest extends CakeTestCase {
 
 		$result = $Controller->loadModel('ControllerPost');
 		$this->assertTrue($result);
-		$this->assertInstanceOf('ControllerPost', $Controller->ControllerPost);
-		$this->assertContains('ControllerPost', $Controller->uses);
-	}
+		$this->assertTrue(is_a($Controller->ControllerPost, 'ControllerPost'));
+		$this->assertTrue(in_array('ControllerPost', $Controller->uses));
 
-/**
- * Test loadModel() when uses = true.
- *
- * @return void
- */
-	public function testLoadModelUsesTrue() {
-		$request = new CakeRequest('controller_posts/index');
-		$response = $this->getMock('CakeResponse');
-		$Controller = new Controller($request, $response);
-		$Controller->uses = true;
-
-		$Controller->loadModel('ControllerPost');
-		$this->assertInstanceOf('ControllerPost', $Controller->ControllerPost);
-		$this->assertContains('ControllerPost', $Controller->uses);
+		ClassRegistry::flush();
+		unset($Controller);
 	}
 
 /**
@@ -499,22 +511,6 @@ class ControllerTest extends CakeTestCase {
 
 		$this->assertTrue(isset($Controller->TestPluginPost));
 		$this->assertTrue(is_a($Controller->TestPluginPost, 'TestPluginPost'));
-	}
-
-/**
- * testConstructClassesWithComponents method
- *
- * @return void
- */
-	public function testConstructClassesWithComponents() {
-		$Controller = new TestPluginController(new CakeRequest(), new CakeResponse());
-		$Controller->uses = array('NameTest');
-		$Controller->components[] = 'Test2';
-
-		$Controller->constructClasses();
-		$this->assertEquals('NameTest', $Controller->Test2->model);
-		$this->assertEquals('Name', $Controller->NameTest->name);
-		$this->assertEquals('Name', $Controller->NameTest->alias);
 	}
 
 /**
@@ -1080,7 +1076,6 @@ class ControllerTest extends CakeTestCase {
  * @return void
  */
 	public function testValidateErrorsOnArbitraryModels() {
-		Configure::write('Config.language', 'eng');
 		$TestController = new TestController();
 
 		$Post = new ControllerPost();

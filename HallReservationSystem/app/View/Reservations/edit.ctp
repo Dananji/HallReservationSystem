@@ -7,8 +7,10 @@
 		echo $this->Form->input('uID');
 		echo $this->Form->input('date');
 		echo $this->Form->input('time');
+		echo $this->Form->input('meridiem');
 		echo $this->Form->input('description');
 		echo $this->Form->input('hID');
+		echo $this->Form->input('reservation_locked');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

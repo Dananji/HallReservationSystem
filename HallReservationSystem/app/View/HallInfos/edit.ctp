@@ -11,6 +11,7 @@
 		echo $this->Form->input('dep_code');
 		echo $this->Form->input('location');
 		echo $this->Form->input('hall_description');
+		echo $this->Form->input('reserved');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

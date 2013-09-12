@@ -1,5 +1,5 @@
 <div class ="search_hall actions">
-    <?php echo $this->Form->create($model = false, array('url' => array('controller' => 'HallReservationSystem', 'action' => 'index')));?>
+    <?php echo $this->Form->create($model = false, array('url' => array('controller' => 'MakeReservation', 'action' => 'index')));?>
     <fieldset>
         <h2>Search Hall</h2>
         <?php

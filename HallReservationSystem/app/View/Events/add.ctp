@@ -4,7 +4,6 @@
 		<legend><?php echo __('Add Event'); ?></legend>
 	<?php
 		echo $this->Form->input('hID');
-		echo $this->Form->input('date');
 		echo $this->Form->input('time');
 		echo $this->Form->input('reserved');
 	?>

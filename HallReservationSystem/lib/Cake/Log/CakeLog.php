@@ -17,7 +17,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Log
  * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('LogEngineCollection', 'Log');
@@ -255,8 +255,8 @@ class CakeLog {
  * }}}
  *
  * @param array $levels array
- * @param boolean $append true to append, false to replace
- * @return array Active log levels
+ * @param bool $append true to append, false to replace
+ * @return array active log levels
  */
 	public static function levels($levels = array(), $append = true) {
 		if (empty(self::$_Collection)) {
@@ -278,7 +278,7 @@ class CakeLog {
 /**
  * Reset log levels to the original value
  *
- * @return array Default log levels
+ * @return array default log levels
  */
 	public static function defaultLevels() {
 		self::$_levelMap = self::$_defaultLevels;
@@ -304,7 +304,7 @@ class CakeLog {
  * Checks whether $streamName is enabled
  *
  * @param string $streamName to check
- * @return boolean
+ * @return bool
  * @throws CakeLogException
  */
 	public static function enabled($streamName) {

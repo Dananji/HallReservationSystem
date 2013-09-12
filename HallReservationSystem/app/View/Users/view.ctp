@@ -1,39 +1,38 @@
 <div class="users view">
-    <h2><?php echo __('User'); ?></h2>
-    <dl>
-        <dt><?php echo __('UID'); ?></dt>
-        <dd>
-            <?php echo h($user['User']['uID']); ?>
+    <h2>User</h2>
+    <dl><?php $i = 0;
+$class = ' class="altrow"';
+?>
+        <dt<?php if ($i % 2 == 0) echo $class; ?>>Id</dt>
+        <dd<?php if ($i++ % 2 == 0) echo $class; ?>>
+<?php echo $user['User']['id']; ?>
             &nbsp;
         </dd>
-        <dt><?php echo __('Username'); ?></dt>
-        <dd>
-            <?php echo h($user['User']['username']); ?>
+        <dt<?php if ($i % 2 == 0) echo $class; ?>>Name</dt>
+        <dd<?php if ($i++ % 2 == 0) echo $class; ?>>
+<?php echo $user['User']['name']; ?>
             &nbsp;
         </dd>
-        <dt><?php echo __('Password'); ?></dt>
-        <dd>
-            <?php echo h($user['User']['password']); ?>
+        <dt<?php if ($i % 2 == 0) echo $class; ?>>Username</dt>
+        <dd<?php if ($i++ % 2 == 0) echo $class; ?>>
+<?php echo $user['User']['username']; ?>
             &nbsp;
         </dd>
-        <dt><?php echo __('Role'); ?></dt>
-        <dd>
-            <?php echo h($user['User']['role']); ?>
-            &nbsp;
-        </dd>
-        <dt><?php echo __('Email'); ?></dt>
-        <dd>
-            <?php echo h($user['User']['email']); ?>
+        <dt<?php if ($i % 2 == 0) echo $class; ?>>Email</dt>
+        <dd<?php if ($i++ % 2 == 0) echo $class; ?>>
+<?php echo $user['User']['email']; ?>
             &nbsp;
         </dd>
     </dl>
 </div>
 <div class="actions">
-    <h3><?php echo __('Actions'); ?></h3>
+    <h3>Actions</h3>
     <ul>
-        <li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', $user['User']['uID'])); ?> </li>
-        <li><?php echo $this->Form->postLink(__('Delete User'), array('action' => 'delete', $user['User']['uID']), null, __('Are you sure you want to delete # %s?', $user['User']['uID'])); ?> </li>
-        <li><?php echo $this->Html->link(__('List Users'), array('action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('New User'), array('action' => 'add')); ?> </li>
+        <?php if ($current_user['id'] == $user['User']['id'] || $current_user['role'] == 'admin'): ?>
+            <li><?php echo $this->Html->link('Edit User', array('action' => 'edit', $user['User']['id'])); ?> </li>
+            <li><?php echo $this->Form->postLink('Delete User', array('action' => 'delete', $user['User']['id']), array('confirm' => 'Are you sure you want to delete that user?')); ?> </li>
+        <?php endif; ?>
+        <li><?php echo $this->Html->link('List Users', array('action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link('New User', array('action' => 'add')); ?> </li>
     </ul>
 </div>

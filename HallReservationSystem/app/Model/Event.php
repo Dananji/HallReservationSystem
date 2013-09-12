@@ -18,7 +18,7 @@ class Event extends AppModel {
  *
  * @var string
  */
-	public $primaryKey = 'date, time';
+	public $primaryKey = 'date';
 
 /**
  * Validation rules

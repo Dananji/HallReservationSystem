@@ -14,9 +14,8 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('ErrorHandler', 'Error');
 App::uses('ConsoleOutput', 'Console');
 App::uses('CakeLog', 'Log');
@@ -60,7 +59,7 @@ class ConsoleErrorHandler {
 			$exception->getMessage(),
 			$exception->getTraceAsString()
 		));
-		return $this->_stop($exception->getCode() ? $exception->getCode() : 1);
+		$this->_stop($exception->getCode() ? $exception->getCode() : 1);
 	}
 
 /**
@@ -88,7 +87,7 @@ class ConsoleErrorHandler {
 		}
 
 		if ($log === LOG_ERR) {
-			return $this->_stop(1);
+			$this->_stop(1);
 		}
 	}
 
@@ -96,7 +95,6 @@ class ConsoleErrorHandler {
  * Wrapper for exit(), used for testing.
  *
  * @param int $code The exit code.
- * @return void
  */
 	protected function _stop($code = 0) {
 		exit($code);

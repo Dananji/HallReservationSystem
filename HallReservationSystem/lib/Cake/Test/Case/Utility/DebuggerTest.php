@@ -10,13 +10,12 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP Project
  * @since         CakePHP(tm) v 1.2.0.5432
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 App::uses('Debugger', 'Utility');
 
 /**
- * DebuggerTestCaseDebugger class
+ * DebugggerTestCaseDebuggger class
  *
  * @package       Cake.Test.Case.Utility
  */
@@ -408,11 +407,6 @@ TEXT;
 false
 TEXT;
 		$this->assertTextEquals($expected, $result);
-
-		$file = fopen('php://output', 'w');
-		fclose($file);
-		$result = Debugger::exportVar($file);
-		$this->assertTextEquals('unknown', $result);
 	}
 
 /**

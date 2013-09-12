@@ -10,6 +10,15 @@ class HallReservationSystemController extends AppController {
         $this->db = new Database();
     }
     
+    public function index() {
+        $task = $this->data['task'];
+        if($task == 'reserve') {
+            $this->redirect(array('controller' => 'makereservation', 'action' => 'index'));
+        }
+        if($task == 'cancel') {
+            $this->redirect(array('controller' => 'cancelreservation', 'action' => 'index'));
+        } 
+    }
     
 }
 

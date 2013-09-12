@@ -21,6 +21,11 @@
 			<?php echo h($reservation['Reservation']['time']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Meridiem'); ?></dt>
+		<dd>
+			<?php echo h($reservation['Reservation']['meridiem']); ?>
+			&nbsp;
+		</dd>
 		<dt><?php echo __('Description'); ?></dt>
 		<dd>
 			<?php echo h($reservation['Reservation']['description']); ?>
@@ -29,6 +34,11 @@
 		<dt><?php echo __('HID'); ?></dt>
 		<dd>
 			<?php echo h($reservation['Reservation']['hID']); ?>
+			&nbsp;
+		</dd>
+		<dt><?php echo __('Reservation Locked'); ?></dt>
+		<dd>
+			<?php echo h($reservation['Reservation']['reservation_locked']); ?>
 			&nbsp;
 		</dd>
 	</dl>

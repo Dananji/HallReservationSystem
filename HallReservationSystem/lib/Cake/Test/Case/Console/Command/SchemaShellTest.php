@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP Project
  * @package       Cake.Test.Case.Console.Command
  * @since         CakePHP v 1.3
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('ShellDispatcher', 'Console');
@@ -33,9 +33,16 @@ App::uses('SchemaShell', 'Console/Command');
 class SchemaShellTestSchema extends CakeSchema {
 
 /**
+ * name property
+ *
+ * @var string 'MyApp'
+ */
+	public $name = 'SchemaShellTest';
+
+/**
  * connection property
  *
- * @var string
+ * @var string 'test'
  */
 	public $connection = 'test';
 

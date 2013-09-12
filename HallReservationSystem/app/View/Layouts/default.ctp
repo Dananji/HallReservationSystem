@@ -14,7 +14,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       app.View.Layouts
  * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
@@ -24,7 +24,6 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
@@ -40,12 +39,21 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <body>
 	<div id="container">
 		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
+                    
 		</div>
 		<div id="content">
+                    
+                    <div style="text-align: right;">
+                        <?php if($logged_in):?>
+                        Welcome <?php echo $current_user['username']?>, <?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'));?>
+                        <?php else: ?>
+                        <?php echo $this->Html->link('Login', array('controller' => 'users', 'action' => 'login'));?>
+                        <?php endif; ?>
+                    </div>
 
 			<?php echo $this->Session->flash(); ?>
-
+                        <?php echo $this->Session->flash('auth'); ?>
+                    
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div id="footer">
@@ -57,6 +65,5 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 			?>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

@@ -14,7 +14,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Test.Case.Model.Datasource.Database
  * @since         CakePHP(tm) v 1.2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('Model', 'Model');
@@ -65,6 +65,13 @@ class DboPostgresTestDb extends Postgres {
  * @package       Cake.Test.Case.Model.Datasource.Database
  */
 class PostgresTestModel extends Model {
+
+/**
+ * name property
+ *
+ * @var string 'PostgresTestModel'
+ */
+	public $name = 'PostgresTestModel';
 
 /**
  * useTable property
@@ -148,6 +155,13 @@ class PostgresTestModel extends Model {
 class PostgresClientTestModel extends Model {
 
 /**
+ * name property
+ *
+ * @var string 'PostgresClientTestModel'
+ */
+	public $name = 'PostgresClientTestModel';
+
+/**
  * useTable property
  *
  * @var bool false
@@ -215,7 +229,6 @@ class PostgresTest extends CakeTestCase {
  *
  */
 	public function setUp() {
-		parent::setUp();
 		Configure::write('Cache.disable', true);
 		$this->Dbo = ConnectionManager::getDataSource('test');
 		$this->skipIf(!($this->Dbo instanceof Postgres));
@@ -228,7 +241,6 @@ class PostgresTest extends CakeTestCase {
  *
  */
 	public function tearDown() {
-		parent::tearDown();
 		Configure::write('Cache.disable', false);
 		unset($this->Dbo2);
 	}
@@ -740,7 +752,7 @@ class PostgresTest extends CakeTestCase {
 	}
 
 /**
- * Test the alterSchema RENAME statements
+ * Test the alterSchema  RENAME statements
  *
  * @return void
  */
@@ -989,31 +1001,6 @@ class PostgresTest extends CakeTestCase {
 		$result = $this->Dbo->rawQuery("SELECT currval('$sequence')");
 		$new = $result->fetch(PDO::FETCH_ASSOC);
 		$this->assertTrue($new['currval'] > $original['nextval'], 'Sequence did not update');
-	}
-
-/**
- * Test the limit function.
- *
- * @return void
- */
-	public function testLimit() {
-		$db = $this->Dbo;
-
-		$result = $db->limit('0');
-		$this->assertNull($result);
-
-		$result = $db->limit('10');
-		$this->assertEquals(' LIMIT 10', $result);
-
-		$result = $db->limit('FARTS', 'BOOGERS');
-		$this->assertEquals(' LIMIT 0 OFFSET 0', $result);
-
-		$result = $db->limit(20, 10);
-		$this->assertEquals(' LIMIT 20 OFFSET 10', $result);
-
-		$result = $db->limit(10, 300000000000000000000000000000);
-		$scientificNotation = sprintf('%.1E', 300000000000000000000000000000);
-		$this->assertNotContains($scientificNotation, $result);
 	}
 
 }

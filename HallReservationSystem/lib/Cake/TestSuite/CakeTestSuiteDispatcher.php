@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.TestSuite
  * @since         CakePHP(tm) v 1.3
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 define('CORE_TEST_CASES', CAKE . 'Test' . DS . 'Case');
@@ -137,9 +137,6 @@ class CakeTestSuiteDispatcher {
  * @return boolean true if found, false otherwise
  */
 	public function loadTestFramework() {
-		if (class_exists('PHPUnit_Framework_TestCase')) {
-			return true;
-		}
 		foreach (App::path('vendors') as $vendor) {
 			$vendor = rtrim($vendor, DS);
 			if (is_dir($vendor . DS . 'PHPUnit')) {
@@ -147,8 +144,8 @@ class CakeTestSuiteDispatcher {
 				break;
 			}
 		}
-		include 'PHPUnit' . DS . 'Autoload.php';
-		return class_exists('PHPUnit_Framework_TestCase');
+
+		return (include ('PHPUnit' . DS . 'Autoload.php')) !== false;
 	}
 
 /**

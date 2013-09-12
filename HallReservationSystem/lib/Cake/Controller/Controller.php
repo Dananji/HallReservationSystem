@@ -11,7 +11,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Controller
  * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 App::uses('CakeResponse', 'Network');
@@ -40,7 +40,7 @@ App::uses('CakeEventManager', 'Event');
  * `$this->response` allows you to manipulate all aspects of the response.
  *
  * Controllers are created by Dispatcher based on request parameters and routing. By default controllers and actions
- * use conventional names. For example `/posts/index` maps to `PostsController::index()`. You can re-map URLs
+ * use conventional names. For example `/posts/index` maps to `PostsController::index()`. You can re-map urls
  * using Router::connect().
  *
  * @package       Cake.Controller
@@ -259,7 +259,7 @@ class Controller extends Object implements CakeEventListener {
 
 /**
  * Holds current methods of the controller. This is a list of all the methods reachable
- * via URL. Modifying this array, will allow you to change which methods can be reached.
+ * via url. Modifying this array, will allow you to change which methods can be reached.
  *
  * @var array
  */
@@ -347,7 +347,7 @@ class Controller extends Object implements CakeEventListener {
  * Lazy loads models using the loadModel() method if declared in $uses
  *
  * @param string $name
- * @return boolean
+ * @return void
  */
 	public function __isset($name) {
 		switch ($name) {
@@ -384,8 +384,8 @@ class Controller extends Object implements CakeEventListener {
  * Provides backwards compatibility access to the request object properties.
  * Also provides the params alias.
  *
- * @param string $name The name of the requested value
- * @return mixed The requested value for valid variables/aliases else null
+ * @param string $name
+ * @return void
  */
 	public function __get($name) {
 		switch ($name) {
@@ -422,19 +422,15 @@ class Controller extends Object implements CakeEventListener {
 			case 'here':
 			case 'webroot':
 			case 'data':
-				$this->request->{$name} = $value;
-				return;
+				return $this->request->{$name} = $value;
 			case 'action':
-				$this->request->params['action'] = $value;
-				return;
+				return $this->request->params['action'] = $value;
 			case 'params':
-				$this->request->params = $value;
-				return;
+				return $this->request->params = $value;
 			case 'paginate':
-				$this->Components->load('Paginator')->settings = $value;
-				return;
+				return $this->Components->load('Paginator')->settings = $value;
 		}
-		$this->{$name} = $value;
+		return $this->{$name} = $value;
 	}
 
 /**
@@ -636,11 +632,11 @@ class Controller extends Object implements CakeEventListener {
  */
 	public function constructClasses() {
 		$this->_mergeControllerVars();
+		$this->Components->init($this);
 		if ($this->uses) {
 			$this->uses = (array)$this->uses;
-			list(, $this->modelClass) = pluginSplit(reset($this->uses));
+			list(, $this->modelClass) = pluginSplit(current($this->uses));
 		}
-		$this->Components->init($this);
 		return true;
 	}
 
@@ -718,7 +714,7 @@ class Controller extends Object implements CakeEventListener {
  *
  * @param string $modelClass Name of model class to load
  * @param integer|string $id Initial ID the instanced model class should have
- * @return bool True if the model was found
+ * @return mixed true when single model found and instance created, error returned if model not found.
  * @throws MissingModelException if the model class cannot be found.
  */
 	public function loadModel($modelClass = null, $id = null) {
@@ -727,7 +723,7 @@ class Controller extends Object implements CakeEventListener {
 		}
 
 		$this->uses = ($this->uses) ? (array)$this->uses : array();
-		if (!in_array($modelClass, $this->uses, true)) {
+		if (!in_array($modelClass, $this->uses)) {
 			$this->uses[] = $modelClass;
 		}
 
@@ -1015,7 +1011,7 @@ class Controller extends Object implements CakeEventListener {
  * @param boolean $exclusive If true, and $op is an array, fields not included in $op will not be
  *        included in the returned conditions
  * @return array An array of model conditions
- * @deprecated Will be removed in 3.0
+ * @deprecated
  */
 	public function postConditions($data = array(), $op = null, $bool = 'AND', $exclusive = false) {
 		if (!is_array($data) || empty($data)) {

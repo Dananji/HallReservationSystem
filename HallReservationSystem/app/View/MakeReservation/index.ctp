@@ -9,6 +9,7 @@
             'minYear' => date('Y'),
             'maxYear' => date('Y') + 3
             ));
+        
         echo $this->Form->input('from', array(
             'options' => $from,
 //            'empty' => true
@@ -21,6 +22,7 @@
             'legend' => false
         );
         echo $this->Form->radio('type_begin', $options, $attributes);
+        
         echo $this->Form->input('to', array(
             'options' => $to,
 //            'empty' => true
@@ -33,11 +35,13 @@
             'legend' => false
         );
         echo $this->Form->radio('type_end', $options, $attributes);
+        
         echo $this->Form->input('capacity', array(
             'rule' => 'numeric',
             'required' => true,
             'message' => 'Capacity is required'
         ));
+        
         echo $this->Form->input('department', array('options' => $departments));
         ?>
     </fieldset>

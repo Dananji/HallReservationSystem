@@ -9,6 +9,7 @@ App::uses('AppController', 'Controller');
  */
 class UsersController extends AppController {
 
+    //login function using the Auth component
     public function login() {
         if ($this->request->is('post')) {
             if ($this->Auth->login()) {
@@ -19,15 +20,18 @@ class UsersController extends AppController {
         }
     }
 
+    //logout function
     public function logout() {
         $this->redirect($this->Auth->logout());
     }
 
+    //allowing unauthorized users to access the view
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('add');
     }
 
+    //setting the user previleges 
     public function isAuthorized($user) {
         if ($user['role'] == 'admin') {
             return true;

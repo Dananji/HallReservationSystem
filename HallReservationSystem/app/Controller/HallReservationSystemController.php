@@ -8,7 +8,7 @@ class HallReservationSystemController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->db = new Database();
-    }
+    }    
     
     public function index() {
         $task = $this->data['task'];

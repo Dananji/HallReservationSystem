@@ -9,7 +9,7 @@
     <table>
         <tr>
             <td class="actions">
-                <?php echo $this->Html->link(__('Home'), array('action' => 'index')); ?>
+                <?php echo $this->Html->link(__('Home'), array('controller' => 'HallReservationSystem','action' => 'index')); ?>
             </td>
         </tr>
     </table>

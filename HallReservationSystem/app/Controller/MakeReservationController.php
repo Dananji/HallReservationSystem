@@ -1,7 +1,6 @@
 <?php
 
 App::uses('AppController', 'Controller');
-//App::uses('DateHelper', 'AppHelper');
 include_once '../Lib/Database.php';
 
 class MakeReservationController extends AppController {
@@ -11,8 +10,10 @@ class MakeReservationController extends AppController {
         $this->db = new Database();
     }
 
+    //index action for reservation making
     public function index() {
         if (!isset($departments) || !isset($from) || !isset($to)) {
+            //retrieving the data from the database for dropdown options
             $sql = "SELECT dep_name FROM department ORDER BY dep_name";
             $query = $this->db->prepare($sql);
             $query->execute();
@@ -29,6 +30,8 @@ class MakeReservationController extends AppController {
             $to = $query->fetchAll(PDO::FETCH_COLUMN);
             $this->set('to', $to);
         }
+
+        //post method to insert data into the session
         if ($this->request->is('post')) {
             $department = $departments[$this->data['department']];
             $capacity = $this->data['capacity'];
@@ -48,15 +51,22 @@ class MakeReservationController extends AppController {
         }
     }
 
+    //select hall function
     public function selectHall($hallID = null, $hallName = null, $location = null, $capacity = null) {
         if ($this->request->is('get')) {
             $capacity = $this->Session->read('capacity');
             $date = $this->Session->read('date');
             $from = $this->Session->read('from');
             $dateTime = $date . $from;
+            // converting the date array into a string 
             $dateString = $date['year'] . '-' . $date['month'] . '-' . $date['day'];
             $this->Session->write('date', $dateString);
             $departments = $this->Session->read('department');
+            $sql = "SELECT CAST( CONCAT_WS(  ' ', reserve_date, reserve_time_start  ) AS datetime ) FROM reserved_hall";
+            $query = $this->db->prepare($sql);
+            $result = $query->execute();
+            $this->set('result', $result);
+            //SQL statement to retreive data from the database according to the user specifications
             $sql = "SELECT hID, hall_name, location
                     FROM hall_info
                     WHERE hID
@@ -92,6 +102,7 @@ class MakeReservationController extends AppController {
     }
 
     public function reservationDetails() {
+        //posting the data into the session entered by the user
         if ($this->request->is('post')) {
             $this->Session->write('first_name', $this->data['first name']);
             $this->Session->write('last_name', $this->data['last name']);
@@ -104,6 +115,7 @@ class MakeReservationController extends AppController {
     public function confirmation() {
         if ($this->request->is('post')) {
             try {
+                //begin transaction
                 $this->db->beginTransaction();
                 $first_name = $this->Session->read('first_name');
                 $last_name = $this->Session->read('last_name');
@@ -112,20 +124,27 @@ class MakeReservationController extends AppController {
                 $query = $this->db->prepare($sql);
                 $query->execute(array($email));
                 $result = $query->fetchAll();
-//                $row = mysql_fetch_assoc($result);
-//                $array = token_get_all($result);
+                //if it is a valid user then continue with the transaction
                 if ($result != null) {
                     $description = $this->Session->read('description');
                     $date = $this->Session->read('date');
                     $time_start = $this->Session->read('from');
-                    $meridiem = $this->Session->read('begin');
-                    $hID = $this->Session->read('hallID');
+                    $begin_meridiem = $this->Session->read('begin');
                     $time_end = $this->Session->read('to');
+                    $end_meridiem = $this->Session->read('end');
+                    $hID = $this->Session->read('hallID');
                     $dateTime = $this->Session->read('dateTime');
-                    $sql = "INSERT INTO reservation(uID, date, time, meridiem, description, hID, reservation_locked) SELECT users.uID,?,?,?,?,?,?  FROM users WHERE email = ?";
-//                  INSERT INTO  reservation(uID, date, time, meridiem, description, hID, reservation_locked) VALUES ((SELECT uID FROM user WHERE email =  ? ),?,?,?,?,?,?)
+                    $sql = "INSERT INTO reservation(uID, date, begin_time, begin_meridiem, end_time, end_meridiem, hID, description, reservation_locked) SELECT users.uID,?,?,?,?,?,?,?,?  FROM users WHERE email = ?";
                     $query = $this->db->prepare($sql);
-                    $db_status = $query->execute(array($date, $time_start, $meridiem, $description, $hID, false, $email));
+                    $db_status = $query->execute(array($date, $time_start, $begin_meridiem, $time_end, $end_meridiem, $hID, $description, false, $email));
+                    //check database status
+                    if (!$db_status) {
+                        $this->db->query("rollback");
+                        $this->redirect(array('action' => 'error'));
+                    }
+                    $sql = "SELECT rID FROM reservation WHERE date = ? AND begin_time = ? AND begin_meridiem = ? AND description = ? AND hID = ? AND reservation_locked = ? ";
+                    $query = $this->db->prepare($sql);
+                    $db_status = $query->execute(array($date, $time_start, $begin_meridiem, $description, $hID, false));
                     if (!$db_status) {
                         $this->db->query("rollback");
                         $this->redirect(array('action' => 'error'));
@@ -138,6 +157,7 @@ class MakeReservationController extends AppController {
                         $this->redirect(array('action' => 'error'));
                     }
                 }
+                //commit to the database at the end of the transaction
                 $this->db->commit();
                 $this->redirect(array('action' => 'success'));
             } catch (PDOException $ex) {

@@ -34,24 +34,38 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+
+    //defining the components array for the Auth component 
     public $components = array(
         'Session',
         'Auth' => array(
-            'loginRedirect' => array('controller' => 'MakeReservation', 'action' => 'index'),
+            'loginRedirect' => array('controller' => 'HallReservationSystem', 'action' => 'index'),
             'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
             'authError' => "You don't have permission to access",
             'authorize' => array('Controller')
         )
     );
-    
+
+    //checking whether the user is authorized 
     public function isAuthorized($user) {
         return true;
     }
-    
+
+    //allowing and denying permission for the unauthorized users to access index and view pages of all the controllers
     public function beforeFilter() {
         $this->Auth->allow('index', 'view');
         $this->set('logged_in', $this->Auth->loggedIn());
         $this->set('current_user', $this->Auth->user());
     }
+
+//    public function beforeRender() {
+//        parent::beforeRender();
+//        if ($this->Session->check('Auth.User')) {
+//            $this->User->recursive = -1;
+//            $currentUser = $this->User->read(null, $this->Session->read('Auth.User.id'));
+//            $this->set(compact('currentUser'));
+//        }
+//    }
+
 }
 

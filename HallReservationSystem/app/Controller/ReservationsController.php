@@ -1,6 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
-App::uses('UsersController', 'AppController');
+
 /**
  * Reservations Controller
  *
@@ -14,13 +14,8 @@ class ReservationsController extends AppController {
     }
     
     public function isAuthorized($user) {
-        if($user['role'] == 'admin') {
+        if ($user['role'] == 'admin') {
             return true;
-        }
-        if(in_array($this->action, array('edit', 'delete'))) {
-            if($user['id'] != $current_user['id']) {
-                return false;
-            }
         }
         return true;
     }

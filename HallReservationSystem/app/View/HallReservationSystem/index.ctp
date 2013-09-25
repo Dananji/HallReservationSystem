@@ -1,8 +1,7 @@
 <div class ="index actions">
      <?php echo $this->Form->create($model = false,array('url'=> array('controller' => 'HallReservationSystem', 'action' => 'index')));?>
-    <div style="font-size: 30px;">Choose the Preferred Action</div>
-    <br>
-    <br>
+    <div style="font-size: 36px;">Choose the Preferred Action</div>
+   
     <div>
         <style type="text/css">
             label{padding-left:5px;}

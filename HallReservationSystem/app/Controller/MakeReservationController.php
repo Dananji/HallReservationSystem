@@ -172,9 +172,19 @@ class MakeReservationController extends AppController {
     }
 
     public function success() {
-        
+        $this->Session->delete('hallID');
+        $this->Session->delete('department');
+        $this->Session->delete('capacity');
+        $this->Session->delete('date');
+        $this->Session->delete('from');
+        $this->Session->delete('to');
+        $this->Session->delete('begin');
+        $this->Session->delete('end');
+        $this->Session->delete('description');
+        $this->Session->delete('location');
+        $this->Session->delete('hallName');
+        $this->Session->delete('dateTime');
     }
-
 }
 
 ?>

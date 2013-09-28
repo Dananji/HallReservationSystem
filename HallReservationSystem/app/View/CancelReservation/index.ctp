@@ -19,8 +19,8 @@
             <td><?php echo h($result['begin_time']." ".$result['begin_meridiem']);?>&nbsp;</td>
             <td><?php echo h($result['end_time']." ").$result['end_meridiem'];?>&nbsp;</td>
             <td class="actions">
-                <?php echo $this->Form->postLink(__('Select'), array('action' => 'cancelRecord', $result['hID'], $result['description'], $result['date'], $result['begin_time'], $result['end_time']
-                    )); ?>
+                <?php // echo $this->Form->postLink(__('Select'), array('action' => 'cancelRecord', $result['hID'], $result['description'], $result['date'], $result['begin_time'], $result['end_time'])); ?>
+                <?php echo $this->Form->end('Select'); ?>
             </td>
         </tr>
         <?php endforeach; ?>

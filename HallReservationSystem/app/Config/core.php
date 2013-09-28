@@ -194,7 +194,9 @@
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+		'defaults' => 'cake',
+		'timeout' => '30',
+		'autoRegenerate' => true
 	));
 
 /**

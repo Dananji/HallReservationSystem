@@ -45,6 +45,8 @@ class AppController extends Controller {
             'authorize' => array('Controller')
         )
     );
+    
+    public $helpers = array('Session');
 
     //checking whether the user is authorized 
     public function isAuthorized($user) {
@@ -56,8 +58,18 @@ class AppController extends Controller {
         $this->Auth->allow('index', 'view');
         $this->set('logged_in', $this->Auth->loggedIn());
         $this->set('current_user', $this->Auth->user());
+        $this->Session->started();
+//        if(!empty($this->passedArgs['url']['session_key'])) {
+//            setcookie(Configure::read('Session.cookie'), $session_cookie, time()+360000, '/', $domain);
+//        }
     }
 
+    public function afterFilter() {
+        parent::afterFilter();
+        if(!empty($this->passedArgs['url']['session_key'])) {
+            setcookie(Configure::read('Session.cookie'), $this->passedArgs['url']['session_key'], time()+360000, '/');
+        }
+    }
 //    public function beforeRender() {
 //        parent::beforeRender();
 //        if ($this->Session->check('Auth.User')) {

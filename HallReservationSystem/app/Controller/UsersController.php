@@ -15,7 +15,7 @@ class UsersController extends AppController {
             if ($this->Auth->login()) {
                 $this->redirect($this->Auth->redirect());
             } else {
-                $this->Session->setFlash('Login Failed');
+                $this->Session->setFlash('Incorrect Username, Password');
             }
         }
     }
@@ -23,6 +23,9 @@ class UsersController extends AppController {
     //logout function
     public function logout() {
         $this->redirect($this->Auth->logout());
+        if($this->Session->valid()) {
+            $this->Session->destroy();
+        }
     }
 
     //allowing unauthorized users to access the view

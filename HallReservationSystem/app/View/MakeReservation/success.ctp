@@ -10,10 +10,16 @@
     <br/>
     <br/>
     <br/>
+    <div>
+        <div style="font-size: 20px">
+            Do you want to make another reservation?
+        </div>
+    </div>
     <table>
         <tr>
             <td class="actions">
-                <?php echo $this->Html->link(__('Home'), array('controller' => 'HallReservationSystem','action' => 'index')); ?>
+                <?php echo $this->Html->link(__('Yes'), array('controller' => 'MakeReservation', 'action' => 'index'))?>
+                <?php echo $this->Html->link(__('No'), array('controller' => 'HallReservationSystem', 'action' => 'index'))?>
             </td>
         </tr>
     </table>

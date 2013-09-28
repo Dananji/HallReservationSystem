@@ -8,23 +8,24 @@ class CancelReservationController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->db = new Database();
+        ini_set('session.cookie_domain', 'http://localhost:81/HallReservationSystem/CancelReservation');
     }
+//
+//    public function isAuthorized($user) {
+//        if ($user['role'] == 'admin') {
+//            return true;
+//        }
+//        if (in_array($this->action, array('edit', 'delete'))) {
+//            if ($user['id'] != $this->request->params['pass'][0]) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
-    public function isAuthorized($user) {
-        if ($user['role'] == 'admin') {
-            return true;
-        }
-        if (in_array($this->action, array('edit', 'delete'))) {
-            if ($user['id'] != $this->request->params['pass'][0]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function index($hallID = null, $description = null, $date = null, $from = null, $to = null, $begin_meridiem = null,$end_meridiem = null) {
+    public function index($reserve = null, $hallID = null, $description = null, $date = null, $from = null, $to = null, $begin_meridiem = null, $end_meridiem = null) {
         if ($this->request->is('get')) {
-            $sql = "SELECT hID, description, date, begin_time, end_time, begin_meridiem, end_meridiem
+            $sql = "SELECT rID, hID, description, date, begin_time, end_time, begin_meridiem, end_meridiem
                     FROM reservation
                     WHERE uID = ( 
                     SELECT uID
@@ -35,6 +36,7 @@ class CancelReservationController extends AppController {
             $results = $query->fetchAll();
             $this->set('results', $results);
         } else {
+            $this->Session->write('rID', $reserve);
             $this->Session->write('hallID', $hallID);
             $this->Session->write('description', $description);
             $this->Session->write('date', $date);
@@ -72,7 +74,7 @@ class CancelReservationController extends AppController {
                     AND reserve_time_end = ? ";
                 $query = $this->db->prepare($sql);
                 $db_status = $query->execute(array($date, $from, $to));
-                if(!$db_status) {
+                if (!$db_status) {
                     $this->db->query("rollback");
                     $this->redirect(array('action' => 'error'));
                 }
@@ -84,11 +86,11 @@ class CancelReservationController extends AppController {
             }
         }
     }
-    
+
     public function error() {
         
     }
-    
+
     public function success() {
         
     }

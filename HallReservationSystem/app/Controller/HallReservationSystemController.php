@@ -14,9 +14,11 @@ class HallReservationSystemController extends AppController {
         $task = $this->data['task'];
         if($task == 'reserve') {
             $this->redirect(array('controller' => 'makereservation', 'action' => 'index'));
+            session_start();
         }
         if($task == 'cancel') {
             $this->redirect(array('controller' => 'cancelreservation', 'action' => 'index'));
+            session_start();
         } 
     }
     

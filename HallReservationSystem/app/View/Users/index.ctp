@@ -9,6 +9,7 @@
             <th>Email</th>
             <th class="actions">Actions</th>
         </tr>
+        <?php $userRole = $this->Session->read('Auth.User.role'); ?>
         <?php
         $i = 0;
         foreach ($users as $user):
@@ -25,10 +26,10 @@
                 <td><?php echo $user['User']['email']; ?>&nbsp;</td>
                 <td class="actions">
                     <?php echo $this->Html->link('View', array('action' => 'view', $user['User']['id'])); ?>
-                    <?php if($current_user['id'] == $user['User']['id'] || $current_user['role'] == 'admin'):?>
+                    <?php if ($current_user['id'] == $user['User']['id'] || $current_user['role'] == 'admin'): ?>
                         <?php echo $this->Html->link('Edit', array('action' => 'edit', $user['User']['id'])); ?>
                         <?php echo $this->Form->postLink('Delete', array('action' => 'delete', $user['User']['id']), array('confirm' => 'Are you sure you want to delete that user?')); ?>
-                    <?php endif;?>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -37,6 +38,14 @@
 <div class="actions">
     <h3>Actions</h3>
     <ul>
-        <li><?php echo $this->Html->link('New User', array('action' => 'add')); ?></li>
+        <?php if ($userRole == 'admin'): ?>
+            <li><?php echo $this->Html->link('Add New User', array('action' => 'add')); ?></li>
+            <li><?php echo $this->Html->link(__('Back'), array('controller' => 'HallReservationSystem', 'action' => 'index')); ?></li>
+        <?php endif; ?>
+        <?php if ($userRole == null): ?>
+            <li><?php echo $this->Html->link(__('Back'), array('controller' => 'Reservations', 'action' => 'index')); ?></li>
+        <?php endif; ?>
     </ul>
 </div>
+
+

@@ -59,7 +59,6 @@ class ReservationsControllerTest extends ControllerTestCase {
  * @return void
  */
 	public function testEdit() {
-            
 	}
 
 /**

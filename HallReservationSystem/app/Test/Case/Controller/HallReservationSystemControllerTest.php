@@ -1,8 +1,8 @@
 <?php
-App::uses('HallReservationSystemController', 'Controller');
+App::uses('DepartmentsController', 'Controller');
 
 /**
- * HallReservationSystemController Test Case
+ * DepartmentsController Test Case
  *
  */
 class HallReservationSystemControllerTest extends ControllerTestCase {

@@ -22,6 +22,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Controller', 'Controller');
+
 //AppController::users();
 
 /**
@@ -43,7 +44,8 @@ class AppController extends Controller {
             'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
             'authError' => "You don't have permission to access",
             'authorize' => array('Controller')
-        )
+        ),
+        'RequestHandler'
     );
     
     public $helpers = array('Session');
@@ -70,6 +72,7 @@ class AppController extends Controller {
             setcookie(Configure::read('Session.cookie'), $this->passedArgs['url']['session_key'], time()+360000, '/');
         }
     }
+
 //    public function beforeRender() {
 //        parent::beforeRender();
 //        if ($this->Session->check('Auth.User')) {

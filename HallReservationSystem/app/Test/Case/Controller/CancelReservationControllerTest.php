@@ -1,29 +1,30 @@
 <?php
-App::uses('CancelReservationController', 'Controller');
+
+App::uses('DepartmentsController', 'Controller');
 
 /**
- * CancelReservationController Test Case
+ * DepartmentsController Test Case
  *
  */
-class CancelReservationControllerTest extends ControllerTestCase {
+class DepartmentsControllerTest extends ControllerTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
-	public $fixtures = array(
-		'app.cancel_reservation'
-	);
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.cancel_reservation'
+    );
 
-/**
- * testIndex method
- *
- * @return void
- */
-	public function testIndex() {
-            $result = $this->testAction('/cancelReservation/index');
-            $debug($result);
-	}
+    /**
+     * testIndex method
+     *
+     * @return void
+     */
+    public function testIndex() {
+        $result = $this->testAction('/cancelReservation/index');
+        $debug($result);
+    }
 
 }

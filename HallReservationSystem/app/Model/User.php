@@ -70,7 +70,6 @@ class User extends AppModel {
         ),
     );
 
-    //match the passwords in the password field and the password confirmation field
     public function matchPasswords($data) {
         if ($data['password'] == $this->data['User']['password_confirmation']) {
             return true;
@@ -79,7 +78,6 @@ class User extends AppModel {
         return false;
     }
     
-    //hash the password before saving 
     public function beforeSave() {
         if(isset($this->data['User']['password'])) {
             $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']); 

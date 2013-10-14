@@ -31,8 +31,8 @@ $class = ' class="altrow"';
         <?php if ($current_user['id'] == $user['User']['id'] || $current_user['role'] == 'admin'): ?>
             <li><?php echo $this->Html->link('Edit User', array('action' => 'edit', $user['User']['id'])); ?> </li>
             <li><?php echo $this->Form->postLink('Delete User', array('action' => 'delete', $user['User']['id']), array('confirm' => 'Are you sure you want to delete that user?')); ?> </li>
+            <li><?php echo $this->Html->link('New User', array('action' => 'add')); ?> </li>
         <?php endif; ?>
         <li><?php echo $this->Html->link('List Users', array('action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link('New User', array('action' => 'add')); ?> </li>
     </ul>
 </div>

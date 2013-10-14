@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppController', 'Controller');
+//App::uses('DateHelper', 'AppHelper');
 include_once '../Lib/Database.php';
 
 class MakeReservationController extends AppController {
@@ -10,10 +11,8 @@ class MakeReservationController extends AppController {
         $this->db = new Database();
     }
 
-    //index action for reservation making
     public function index() {
         if (!isset($departments) || !isset($from) || !isset($to)) {
-            //retrieving the data from the database for dropdown options
             $sql = "SELECT dep_name FROM department ORDER BY dep_name";
             $query = $this->db->prepare($sql);
             $query->execute();
@@ -30,8 +29,6 @@ class MakeReservationController extends AppController {
             $to = $query->fetchAll(PDO::FETCH_COLUMN);
             $this->set('to', $to);
         }
-
-        //post method to insert data into the session
         if ($this->request->is('post')) {
             $department = $departments[$this->data['department']];
             $capacity = $this->data['capacity'];
@@ -51,8 +48,7 @@ class MakeReservationController extends AppController {
         }
     }
 
-    //select hall function
-    public function selectHall($hallID = null, $hallName = null, $location = null, $capacity = null) {
+    public function selectHall($hallID = null, $hallName = null, $location = null, $hall_description = null, $capacity = null) {
         if ($this->request->is('get')) {
             $capacity = $this->Session->read('capacity');
             $date = $this->Session->read('date');
@@ -62,12 +58,16 @@ class MakeReservationController extends AppController {
             $dateString = $date['year'] . '-' . $date['month'] . '-' . $date['day'];
             $this->Session->write('date', $dateString);
             $departments = $this->Session->read('department');
-            $sql = "SELECT CAST( CONCAT_WS(  ' ', reserve_date, reserve_time_start  ) AS datetime ) FROM reserved_hall";
-            $query = $this->db->prepare($sql);
-            $result = $query->execute();
-            $this->set('result', $result);
-            //SQL statement to retreive data from the database according to the user specifications
-            $sql = "SELECT hID, hall_name, location
+            $today = date("Y-m-d");
+            $dayAfterTomo = date("Y-m-d", strtotime($date . "+2 days"));
+            $realDay = date("Y-m-d", strtotime($today . "+2 days"));
+            if ($date > $realDay && $dayAfterTomo < $today) {
+                $sql = "SELECT CAST( CONCAT_WS(  ' ', reserve_date, reserve_time_start  ) AS datetime ) FROM reserved_hall";
+                $query = $this->db->prepare($sql);
+                $result = $query->execute();
+                $this->set('result', $result);
+                //SQL statement to retreive data from the database according to the user specifications
+                $sql = "SELECT hID, hall_name, location, hall_description
                     FROM hall_info
                     WHERE hID
                     IN (
@@ -88,21 +88,22 @@ class MakeReservationController extends AppController {
                     FROM department
                     WHERE dep_name =  ? ) 
                     ORDER BY hall_info.hID";
-            $query = $this->db->prepare($sql);
-            $query->execute(array($dateString, $capacity, $departments));
-            $results = $query->fetchAll();
-            $this->set('results', $results);
+                $query = $this->db->prepare($sql);
+                $query->execute(array($dateString, $capacity, $departments));
+                $results = $query->fetchAll();
+                $this->set('results', $results);
+            }
         } else {
             $this->Session->write('hallID', $hallID);
             $this->Session->write('hallName', $hallName);
             $this->Session->write('location', $location);
+            $this->Session->write('hallDescription', $hall_description);
             $this->Session->write('dateTime', $dateTime);
             $this->redirect(array('action' => 'reservationDetails'));
         }
     }
 
     public function reservationDetails() {
-        //posting the data into the session entered by the user
         if ($this->request->is('post')) {
             $this->Session->write('first_name', $this->data['first name']);
             $this->Session->write('last_name', $this->data['last name']);
@@ -115,7 +116,6 @@ class MakeReservationController extends AppController {
     public function confirmation() {
         if ($this->request->is('post')) {
             try {
-                //begin transaction
                 $this->db->beginTransaction();
                 $first_name = $this->Session->read('first_name');
                 $last_name = $this->Session->read('last_name');
@@ -124,7 +124,6 @@ class MakeReservationController extends AppController {
                 $query = $this->db->prepare($sql);
                 $query->execute(array($email));
                 $result = $query->fetchAll();
-                //if it is a valid user then continue with the transaction
                 if ($result != null) {
                     $description = $this->Session->read('description');
                     $date = $this->Session->read('date');
@@ -134,30 +133,38 @@ class MakeReservationController extends AppController {
                     $end_meridiem = $this->Session->read('end');
                     $hID = $this->Session->read('hallID');
                     $dateTime = $this->Session->read('dateTime');
-                    $sql = "INSERT INTO reservation(uID, date, begin_time, begin_meridiem, end_time, end_meridiem, hID, description, reservation_locked) SELECT users.uID,?,?,?,?,?,?,?,?  FROM users WHERE email = ?";
+                    $sql = "INSERT INTO reservation(uID, date, begin_time, begin_meridiem, end_time, end_meridiem, hID, description, mail_sent) SELECT users.uID,?,?,?,?,?,?,?,?  FROM users WHERE email = ?";
                     $query = $this->db->prepare($sql);
                     $db_status = $query->execute(array($date, $time_start, $begin_meridiem, $time_end, $end_meridiem, $hID, $description, false, $email));
-                    //check database status
                     if (!$db_status) {
                         $this->db->query("rollback");
                         $this->redirect(array('action' => 'error'));
                     }
-                    $sql = "SELECT rID FROM reservation WHERE date = ? AND begin_time = ? AND begin_meridiem = ? AND description = ? AND hID = ? AND reservation_locked = ? ";
+                    $sql = "SELECT rID FROM reservation WHERE date = ? AND begin_time = ? AND begin_meridiem = ? AND description = ? AND hID = ? AND mail_sent = ? ";
                     $query = $this->db->prepare($sql);
                     $db_status = $query->execute(array($date, $time_start, $begin_meridiem, $description, $hID, false));
                     if (!$db_status) {
                         $this->db->query("rollback");
                         $this->redirect(array('action' => 'error'));
                     }
-                    $sql = "INSERT INTO reserved_hall(hID, reserve_time_start, reserve_time_end, reserve_date, reserved) VALUES (?,?,?,?,?)";
-                    $query = $this->db->prepare($sql);
-                    $db_status = $query->execute(array($hID, $time_start, $time_end, $date, true));
-                    if (!$db_status) {
-                        $this->db->query("rollback");
-                        $this->redirect(array('action' => 'error'));
+                    while ($item = $query->fetch(PDO::FETCH_ASSOC)) {
+                        $rID = $item['rID'];
+                        $sql = "INSERT INTO reserved_hall(hID, rID, reserve_time_start, reserve_time_end, reserve_date, reserved) VALUES (?,?,?,?,?,?)";
+                        $query = $this->db->prepare($sql);
+                        $db_status = $query->execute(array($hID, $rID, $time_start, $time_end, $date, true));
+                        if (!$db_status) {
+                            $this->db->query("rollback");
+                            $this->redirect(array('action' => 'error'));
+                        }
+                        $sql = "INSERT INTO events(hID, rID, name, event_date, time_begin, begin_meridiem, time_end, end_meridiem) VALUES (?,?,?,?,?,?,?,?)";
+                        $query = $this->db->prepare($sql);
+                        $db_status = $query->execute(array($hID, $rID, $description, $date, $time_start, $begin_meridiem, $time_end, $end_meridiem));
+                        if (!$db_status) {
+                            $this->db->query("rollback");
+                            $this->redirect(array('action' => 'error'));
+                        }
                     }
                 }
-                //commit to the database at the end of the transaction
                 $this->db->commit();
                 $this->redirect(array('action' => 'success'));
             } catch (PDOException $ex) {
@@ -185,6 +192,7 @@ class MakeReservationController extends AppController {
         $this->Session->delete('hallName');
         $this->Session->delete('dateTime');
     }
+
 }
 
 ?>

@@ -38,6 +38,20 @@ class HallInfosControllerTest extends ControllerTestCase {
  * @return void
  */
 	public function testAdd() {
+            $tmp =array(
+                'HallInfo' => array(
+                    'hID' => 'CS001',
+                    'hall_name' => 'Seminar Room',
+                    'cap_min' => '50',
+                    'cap_max' => '100',
+                    'dep_code' => 'CS',
+                    'location' => 'Sumanadasa Building, 2nd Floor',
+                    'hall_description' => 'Over head projector with comfortable seatings.',
+                    'reserved' => false
+                )
+            );
+            $result = $this->testAction('hallinfos/add', array('data' => $tmp, 'method', 'post'));
+            debug($result);
 	}
 
 /**

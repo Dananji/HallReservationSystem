@@ -3,11 +3,12 @@
     <h2>Confirm Action</h2>
     <br>
     <br>
-    <h3>Hall Information</h3>
+    <h3>Are you sure, you want to cancel the reservation?</h3>
+<!--    <h3>Hall Information</h3>
     <dl>
         <dt><?php echo __('Hall ID'); ?></dt>
         <dd>
-            <?php echo h($this->Session->read('rID')); ?>
+            <?php echo h($this->Session->read('hallID')); ?>
             &nbsp;
         </dd>
         <dt><?php echo __('Description'); ?></dt>
@@ -40,11 +41,11 @@
             <?php echo h($this->Session->read('Auth.User.email')); ?>
             &nbsp;
         </dd>
-    </dl>
+    </dl>-->
     <table>
             <tr>
                 <td class="actions">
-                    <?php echo $this->Form->postLink(__('Cancel Reservation'), array('action' => 'cancelRecord'));?>
+                    <?php echo $this->Form->postLink(__('Yes'), array('action' => 'cancelRecord'));?>
                     <?php echo $this->Html->link(__('Back'), array('action' => 'index'));?>
                     <?php echo $this->Html->link(__('Home'), array('controller' => 'HallReservationSystem', 'action' => 'index'));?>
                 </td>
